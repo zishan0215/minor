@@ -14,12 +14,13 @@ def master():
         path += folder
         os.chdir(path)
         table_name = "master" + folder
-        query = "CREATE TABLE IF NOT EXISTS " + table_name + " (latitude real, longitude real, dated date, timed time)"
+        query = "CREATE TABLE IF NOT EXISTS " + table_name + ''' (id integer primary key autoincrement not null,
+                  latitude real not null, longitude real not null, dated date not null, timed time not null)'''
         c.execute(query)
         with open("master.csv", "r") as f:
             for line in f:
                 line = line.split(",")
-                c.execute("INSERT INTO " + table_name + " values (?, ?, ?, ?)", line)
+                c.execute("INSERT INTO " + table_name + "(latitude, longitude, dated, timed) values (?, ?, ?, ?)", line)
                 print(line)
     conn.commit()
     conn.close()

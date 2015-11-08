@@ -33,25 +33,50 @@ def get_places():
     places = []
     query = "SELECT * FROM places"
     for line in c.execute(query):
-        places.append(line[1:5])
-    for u in range(40, 50):
+        line = list(line[1:5])
+        if len(places) == 0:
+            line.append(0)
+        else:
+            line.append(get_distance(line, places[0]))
+            places.append(line)
+
+    for u in range(0, 10):
         user = get_folder(u)
         query = "SELECT * FROM master" + user
         lines = []
         now = time.time()
         for line in c.execute(query):
-            lines.append(line[1:])
+            line = list(line[1:])
+            if len(places) == 0:
+                line.append(0)
+            else:
+                line.append(get_distance(line, places[0]))
+            lines.append(line)
         for line in lines:
             if line not in places:
                 if not find_place(places, line):
-                    c.execute("INSERT INTO places(latitude, longitude, dated, timed) VALUES (?, ?, ?, ?)", line)
+                    if line[4] == 0 and len(places) != 0:
+                        line[4] = get_distance(line, places[0])
                     places.append(line)
+                    # print(line)
             if time.time() - now > 60:
                 print("Processing user: ", user)
+                print("Line: ", line)
                 now = time.time()
         print("User: ", user)
         print("Num Places: ", len(places))
         print("Num Lines", len(lines))
+
+        places.sort(key=lambda place: place[4])
+
+        query = "DELETE FROM places"
+        c.execute(query)
+        query = "DELETE FROM sqlite_sequence WHERE NAME = 'places'"
+        c.execute(query)
+
+        for place in places:
+            c.execute("INSERT INTO places(latitude, longitude, dated, timed) VALUES (?, ?, ?, ?)", place[0:4])
+            print(place[0:4])
         conn.commit()
     conn.close()
     os.chdir(cur_path)

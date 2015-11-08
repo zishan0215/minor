@@ -8,7 +8,7 @@ def master():
     os.chdir(path)
     conn = sqlite3.connect('data.db')
     c = conn.cursor()
-    for fol in range(1, 182):
+    for fol in range(0, 182):
         folder = get_folder(fol)
         path = "/home/zishan/development/minor/data/"
         path += folder
@@ -42,5 +42,5 @@ def place():
     os.chdir(cur_path)
 
 if __name__ == '__main__':
-    # master()
+    master()
     place()

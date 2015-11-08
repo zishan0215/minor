@@ -1,6 +1,7 @@
 from functions import get_distance, get_folder
 import os
 import sqlite3
+import time
 
 def find_place(places, line):
     '''
@@ -10,12 +11,20 @@ def find_place(places, line):
     '''
     if len(places) == 0:
         return False
-    for p in places:
-        if get_distance(p, line) < 15:
+    low = 0
+    high = len(places)
+    while low <= high:
+        mid = int((low + high)/2)
+        if get_distance(places[mid], line) <= 15:
             return False
+        else:
+            high = mid - 1
+    # for p in places:
+    #     if get_distance(p, line) < 15:
+    #         return False
     return True
 
-def places():
+def get_places():
     cur_path = os.getcwd()
     path = cur_path[:-7] + "data/"
     os.chdir(path)
@@ -24,18 +33,23 @@ def places():
     places = []
     query = "SELECT * FROM places"
     for line in c.execute(query):
-        places.append(line)
-    for fol in range(9, 20):                        # 0-19 done
-        folder = get_folder(fol)
-        query = "SELECT * FROM master" + folder
+        places.append(line[1:5])
+    for u in range(40, 50):
+        user = get_folder(u)
+        query = "SELECT * FROM master" + user
         lines = []
+        now = time.time()
         for line in c.execute(query):
-            lines.append(line)
+            lines.append(line[1:])
         for line in lines:
             if line not in places:
                 if not find_place(places, line):
-                    c.execute("INSERT INTO places VALUES (?, ?, ?, ?)", line)
+                    c.execute("INSERT INTO places(latitude, longitude, dated, timed) VALUES (?, ?, ?, ?)", line)
                     places.append(line)
+            if time.time() - now > 60:
+                print("Processing user: ", user)
+                now = time.time()
+        print("User: ", user)
         print("Num Places: ", len(places))
         print("Num Lines", len(lines))
         conn.commit()
@@ -43,4 +57,4 @@ def places():
     os.chdir(cur_path)
 
 if __name__ == '__main__':
-    places()
+    get_places()

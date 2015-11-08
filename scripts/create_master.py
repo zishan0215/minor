@@ -1,4 +1,4 @@
-from rename_files import get_folder
+from functions import get_folder
 import os
 
 def master():

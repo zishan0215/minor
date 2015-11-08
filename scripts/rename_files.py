@@ -1,18 +1,5 @@
 import os
-
-def get_folder(f):
-    if f == 0:
-        return "000"
-    folder = str(f)
-    length = 0
-    while f != 0:
-        length += 1
-        f /= 10
-        f = int(f)
-    while length != 3:
-        folder = "0" + folder
-        length += 1
-    return folder
+from functions import get_folder
 
 def rename():
     cur_path = os.getcwd()

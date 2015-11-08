@@ -4,7 +4,7 @@ import sqlite3
 
 def master():
     cur_path = os.getcwd()
-    path = "/home/zishan/development/minor/data/"
+    path = cur_path[:-7] + "data/"
     os.chdir(path)
     conn = sqlite3.connect('data.db')
     c = conn.cursor()
@@ -26,5 +26,21 @@ def master():
     conn.close()
     os.chdir(cur_path)
 
+def place():
+    cur_path = os.getcwd()
+    path = cur_path[:-7] + "data/"
+    os.chdir(path)
+    conn = sqlite3.connect('data.db')
+    c = conn.cursor()
+    query = '''CREATE TABLE IF NOT EXISTS places (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                latitude REAL NOT NULL, longitude REAL NOT NULL, dated DATE NOT NULL,
+                timed TIME NOT NULL, weight INTEGER NOT NULL DEFAULT 0)
+            '''
+    c.execute(query)
+    conn.commit()
+    conn.close()
+    os.chdir(cur_path)
+
 if __name__ == '__main__':
-    master()
+    # master()
+    place()

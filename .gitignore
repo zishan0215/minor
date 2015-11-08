@@ -57,5 +57,7 @@ docs/_build/
 target/
 
 # Mine
-data/
+data/0*/
+data/1*/
+data/data.db-*
 .idea/

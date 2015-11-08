@@ -1,18 +1,20 @@
 import math
 
 def get_distance(initial, final):
-    distance = []
-    for i in range(0, len(initial)):
-        R = 6371000
-        phi1 = math.radians(float(initial[i][0]))
-        phi2 = math.radians(float(final[i][0]))
-        dphi = math.radians(float(final[i][0]) - float(initial[i][0]))
-        dl = math.radians(float(final[i][1]) - float(initial[i][1]))
-        a = (math.sin(dphi/2)**2) + (math.cos(phi1) * math.cos(phi2) * math.sin(dl/2)**2)
-        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
-        d = R * c
-        distance.append(d)
-    return distance
+    '''
+    :param initial (list: [latitide, longitude]):
+    :param final (list: [latitide, longitude]):
+    :return: distance in meters
+    '''
+    R = 6371000
+    phi1 = math.radians(float(initial[0]))
+    phi2 = math.radians(float(final[0]))
+    dphi = math.radians(float(final[0]) - float(initial[0]))
+    dl = math.radians(float(final[1]) - float(initial[1]))
+    a = (math.sin(dphi/2)**2) + (math.cos(phi1) * math.cos(phi2) * math.sin(dl/2)**2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    d = R * c
+    return d
 
 def get_folder(f):
     if f == 0:

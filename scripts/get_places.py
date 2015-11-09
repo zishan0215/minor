@@ -40,7 +40,7 @@ def get_places():
             line.append(get_distance(line, places[0]))
             places.append(line)
 
-    for u in range(0, 10):
+    for u in range(0, 120):
         user = get_folder(u)
         query = "SELECT * FROM master" + user
         lines = []

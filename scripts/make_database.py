@@ -41,6 +41,20 @@ def place():
     conn.close()
     os.chdir(cur_path)
 
+def alter_places():
+    cur_path = os.getcwd()
+    path = cur_path[:-7] + "data/"
+    os.chdir(path)
+    conn = sqlite3.connect('data.db')
+    c = conn.cursor()
+    query = "ALTER TABLE places ADD COLUMN name TEXT"
+    c.execute(query)
+    conn.commit()
+    conn.close()
+    os.chdir(cur_path)
+
+
 if __name__ == '__main__':
-    master()
-    place()
+    # master()
+    # place()
+    alter_places()

@@ -1,16 +1,13 @@
-from functions import get_distance
-import os
+from functions import get_distance, change_path_to_data, back_to_path
 import sqlite3
 
 def test_places():
-    cur_path = os.getcwd()
-    path = cur_path[:-7] + "data/"
-    os.chdir(path)
+    cur_path = change_path_to_data()
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
     places = []
     distances = []
-    query = "SELECT * FROM places LIMIT 10"
+    query = "SELECT * FROM places"
     for line in c.execute(query):
         places.append(line[1:5])
     for place in places:
@@ -20,6 +17,30 @@ def test_places():
         print("Its sorted :D")
     else:
         print("Not sorted.")
+    back_to_path(cur_path)
+
+def test_distance():
+    cur_path = change_path_to_data()
+
+    conn = sqlite3.connect("data.db")
+    c = conn.cursor()
+    places = []
+    distances = []
+    query = "SELECT * FROM master000"
+    for line in c.execute(query):
+        places.append(list(line))
+
+    for place in places:
+        place.append(get_distance(place[1:], places[0][1:]))
+
+    places.sort(key=lambda place: -place[5])
+
+    for place in places:
+        print(str(place[0]) + ": " + str(place[5]))
+
+
+    back_to_path(cur_path)
 
 if __name__ == '__main__':
-    test_places()
+    # test_places()
+    test_distance()

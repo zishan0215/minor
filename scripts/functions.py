@@ -1,4 +1,5 @@
 import math
+import os
 
 def get_distance(initial, final):
     '''
@@ -15,6 +16,15 @@ def get_distance(initial, final):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     d = R * c
     return d
+
+def change_path_to_data():
+    cur_path = os.getcwd()
+    path = cur_path[:-7] + "data/"
+    os.chdir(path)
+    return cur_path
+
+def back_to_path(cur_path):
+    os.chdir(cur_path)
 
 def get_folder(f):
     if f == 0:

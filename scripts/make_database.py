@@ -1,4 +1,4 @@
-from functions import get_folder
+from functions import get_folder, change_path_to_data, back_to_path
 import os
 import sqlite3
 
@@ -53,8 +53,18 @@ def alter_places():
     conn.close()
     os.chdir(cur_path)
 
+def create_finit():
+    cur_path = change_path_to_data()
+    conn = sqlite3.connect('data.db')
+    c = conn.cursor()
+    query = "CREATE TABLE IF NOT EXISTS finit (initial INTEGER NOT NULL, final INTEGER NOT NULL)"
+    c.execute(query)
+    conn.commit()
+    conn.close()
+    back_to_path(cur_path)
 
 if __name__ == '__main__':
     # master()
     # place()
-    alter_places()
+    # alter_places()
+    create_finit()

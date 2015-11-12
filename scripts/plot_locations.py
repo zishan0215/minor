@@ -26,7 +26,8 @@ def plot():
 
     conn = sqlite3.connect('data.db')
     c = conn.cursor()
-    query = "SELECT * FROM master000 LIMIT 1000"
+    query = "SELECT * FROM master000 WHERE id IN (SELECT initial FROM finit)"
+    # query = "SELECT * FROM master000 LIMIT 50000"
     lats = []
     lons = []
     labels = []
@@ -40,8 +41,8 @@ def plot():
     x, y = map(lons, lats)
     map.plot(x, y, 'bo', markersize=6)
 
-    for label, xpt, ypt in zip(labels, x, y):
-        plt.text(xpt, ypt, label)
+    # for label, xpt, ypt in zip(labels, x, y):
+    #     plt.text(xpt, ypt, label)
 
     conn.close()
     plt.show()

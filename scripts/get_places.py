@@ -91,12 +91,11 @@ def places_using_time():
     added_to_initial = False
     for u in range(0, 1):
         user = get_folder(u)
-        query = "SELECT * FROM master" + user + " LIMIT 2500"
+        query = "SELECT * FROM master" + user
         last = []
         for line in c.execute(query):
             line = list(line)
             line[4] = line[4][:-1]
-            last = line
             # print(line)
             if added_to_initial:
                 if get_minutes(line[4], initial[len(initial) - 1][4]) > 10:
@@ -110,9 +109,17 @@ def places_using_time():
                 initial.append(line)
                 added_to_initial = True
                 added_to_final = False
+            last = line
         if added_to_initial:
             final.append(last)
 
+    for i in range(0, len(initial) - 1):
+        values = [initial[i][0], final[i][0]]
+        query = "INSERT INTO finit VALUES({},{})".format(initial[i][0], final[i][0])
+        c.execute(query)
+
+    conn.commit()
+    conn.close()
     back_to_path(cur_path)
 
 if __name__ == '__main__':

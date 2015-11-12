@@ -1,4 +1,4 @@
-from functions import get_distance, get_folder
+from functions import get_distance, get_folder, change_path_to_data, back_to_path, get_minutes
 import os
 import sqlite3
 import time
@@ -81,5 +81,40 @@ def get_places():
     conn.close()
     os.chdir(cur_path)
 
+def places_using_time():
+    cur_path = change_path_to_data()
+    conn = sqlite3.connect('data.db')
+    c = conn.cursor()
+    initial = []
+    final = []
+    added_to_final = True
+    added_to_initial = False
+    for u in range(0, 1):
+        user = get_folder(u)
+        query = "SELECT * FROM master" + user + " LIMIT 2500"
+        last = []
+        for line in c.execute(query):
+            line = list(line)
+            line[4] = line[4][:-1]
+            last = line
+            # print(line)
+            if added_to_initial:
+                if get_minutes(line[4], initial[len(initial) - 1][4]) > 10:
+                    # print("adding to final: ", line)
+                    final.append(line)
+                    added_to_final = True
+                    added_to_initial = False
+                    continue
+            if added_to_final:
+                # print("adding to initial: ", line)
+                initial.append(line)
+                added_to_initial = True
+                added_to_final = False
+        if added_to_initial:
+            final.append(last)
+
+    back_to_path(cur_path)
+
 if __name__ == '__main__':
-    get_places()
+    # get_places()
+    places_using_time()

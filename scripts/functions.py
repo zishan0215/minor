@@ -26,6 +26,18 @@ def change_path_to_data():
 def back_to_path(cur_path):
     os.chdir(cur_path)
 
+def get_minutes(t1, t2):
+    x = t1.split(":")
+    y = t2.split(":")
+    h1 = int(x[0])
+    h2 = int(y[0])
+    m1 = int(x[1])
+    m2 = int(y[1])
+    min_diff = m2 - m1
+    hour_diff = (h2 - h1) * 60
+    total_min = hour_diff + min_diff
+    return total_min
+
 def get_folder(f):
     if f == 0:
         return "000"

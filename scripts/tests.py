@@ -35,9 +35,12 @@ def test_distance():
 
     places.sort(key=lambda place: -place[5])
 
+    count = 0
     for place in places:
         print(str(place[0]) + ": " + str(place[5]))
-
+        count += 1
+        if count == 20:
+            break
 
     back_to_path(cur_path)
 

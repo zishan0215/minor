@@ -93,6 +93,11 @@ def copy_db_to_app():
     conn = sqlite3.connect('db.sqlite3')
     c = conn.cursor()
 
+    query = "DELETE FROM locations_location"
+    c.execute(query)
+    query = "DELETE FROM sqlite_sequence WHERE NAME = 'locations_location'"
+    c.execute(query)
+
     for place in places:
         c.execute("INSERT INTO locations_location(latitude, longitude, weight, name) VALUES(?,?,?, 'unidentified')", place)
 

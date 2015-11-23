@@ -140,7 +140,7 @@ def get_places_by_date_time():
 
     new_places = []
 
-    for u in range(0, 5):
+    for u in range(0, 10):
         user = get_folder(u)
 
         # Get all dates from the database

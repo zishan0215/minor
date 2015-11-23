@@ -1,0 +1,25 @@
+body {
+    text-align: center;
+}
+
+header {
+    width: 100%;
+    padding: 10px;
+    background-color: lightslategray;
+    box-shadow: 3px 3px 3px darkgrey;
+}
+
+#content {
+    width: 1000px;
+    margin: 30px auto;
+    padding: 10px;
+    box-shadow: 3px 3px 3px darkgrey;
+}
+
+#map {
+    width: 1000px;
+    height: 400px;
+    margin: 30px auto;
+    padding: 10px;
+    box-shadow: 3px 3px 3px darkgrey;
+}

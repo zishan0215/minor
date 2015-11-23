@@ -125,39 +125,78 @@ def places_using_time():
     conn.close()
     back_to_path(cur_path)
 
+def find_place_linear(places, p):
+    for i in range(len(places)):
+        distance = get_distance(places[i][1:3], p[1:3])
+        if distance <= 15:
+            return i
+
+    return -1
+
 def get_places_by_date_time():
     cur_path = change_path_to_data()
     conn = sqlite3.connect('data.db')
     c = conn.cursor()
 
-    # Get all dates from the database
-    query = "SELECT DISTINCT dated FROM master000"
-    dates = []
-    for line in c.execute(query):
-        dates.append(line[0])
+    new_places = []
 
-    places = []
+    for u in range(0, 5):
+        user = get_folder(u)
 
-    # For each date in the database, get all the locations and extract places based on 10 minute difference
-    for d in dates:
-        query = "SELECT * FROM master000 WHERE dated = '" + str(d) + "'"
-        # print(query)
-        prev = 0
+        # Get all dates from the database
+        query = "SELECT DISTINCT dated FROM master" + user      # 6367 for 000, 256 for 001
+        dates = []
         for line in c.execute(query):
-            line = list(line)
-            line[4] = line[4][:-1]
-            if prev == 0:
-                # print(line, prev)
-                places.append(line)
-                prev += 1
-            else:
-                minutes = get_minutes(places[prev-1][4], line[4])
-                # print(minutes)
-                if minutes > 15:
-                    # print(line, minutes, prev)
+            dates.append(line[0])
+
+        places = []
+
+        # places.append([172042, 39.955832, 116.329224, '2009-07-05', '04:44:31'])
+        # For each date in the database, get all the locations and extract places based on 10 minute difference
+        for d in dates:
+            query = "SELECT * FROM master" + user + " WHERE dated = '" + str(d) + "'"
+            # print(query)
+            prev = 0
+            for line in c.execute(query):
+                line = list(line)
+                line[4] = line[4][:-1]
+                if prev == 0:
+                    # print(line, prev)
                     places.append(line)
                     prev += 1
+                else:
+                    minutes = get_minutes(places[prev-1][4], line[4])
+                    # print(minutes)
+                    if minutes > 15:
+                        distance = get_distance(places[prev-1][1:3], line[1:3])
+                        if distance > 20:
+                            if line not in places:
+                                # line.append(1)
+                                # print(line, minutes, distance)
+                                places.append(line)
+                                prev += 1
 
+        # Add entries to new_places
+        initial = len(new_places)
+        if len(new_places) == 0:
+            for p in places:
+                p.append(1)
+                new_places.append(p)
+        else:
+            for p in places:
+                index = find_place_linear(new_places, p)
+                if index == -1:
+                    p.append(1)
+                    new_places.append(p)
+                else:
+                    new_places[index][5] += 1
+
+        print("User: ", user)
+        print("Number of places: ", len(places))
+        print("Number of places added: ", len(new_places) - initial)
+
+    # print(new_places)
+    print("Total new places: ", len(new_places))
     # Remove entries from new_places table
     query = "DELETE FROM new_places"
     c.execute(query)
@@ -165,8 +204,8 @@ def get_places_by_date_time():
     c.execute(query)
 
     for place in places:
-        c.execute("INSERT INTO new_places(latitude, longitude, dated, timed) VALUES (?, ?, ?, ?)", place[1:])
-        print(place[0:4])
+        c.execute("INSERT INTO new_places(latitude, longitude, dated, timed, weight) VALUES (?, ?, ?, ?, ?)", place[1:6])
+        # print(place[0:4])
 
     conn.commit()
     conn.close()

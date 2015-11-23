@@ -78,9 +78,31 @@ def create_finit():
     conn.close()
     back_to_path(cur_path)
 
+def copy_db_to_app():
+    cur_path = change_path_to_data()
+    conn = sqlite3.connect('data.db')
+    c = conn.cursor()
+
+    query = "SELECT latitude, longitude, weight FROM new_places"
+    places = []
+    for line in c.execute(query):
+        places.append(line)
+    conn.close()
+
+    os.chdir('../app')
+    conn = sqlite3.connect('db.sqlite3')
+    c = conn.cursor()
+
+    for place in places:
+        c.execute("INSERT INTO locations_location(latitude, longitude, weight, name) VALUES(?,?,?, 'unidentified')", place)
+
+    conn.commit()
+    conn.close()
+
 if __name__ == '__main__':
     # master()
     # place()
     # alter_places()
     # create_finit()
-    new_places()
+    # new_places()
+    copy_db_to_app()

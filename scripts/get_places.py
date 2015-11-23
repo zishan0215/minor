@@ -203,8 +203,8 @@ def get_places_by_date_time():
     query = "DELETE FROM sqlite_sequence WHERE NAME = 'new_places'"
     c.execute(query)
 
-    for place in places:
-        c.execute("INSERT INTO new_places(latitude, longitude, dated, timed, weight) VALUES (?, ?, ?, ?, ?)", place[1:6])
+    for place in new_places:
+        c.execute("INSERT INTO new_places(latitude, longitude, dated, timed, weight) VALUES (?, ?, ?, ?, ?)", place[1:])
         # print(place[0:4])
 
     conn.commit()

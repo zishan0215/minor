@@ -26,15 +26,16 @@ def plot():
 
     conn = sqlite3.connect('data.db')
     c = conn.cursor()
-    query = "SELECT * FROM master000 WHERE id IN (SELECT initial FROM finit)"
-    # query = "SELECT * FROM master000 LIMIT 50000"
+    # query = "SELECT * FROM master000 WHERE id IN (SELECT initial FROM finit)"
+    query = "SELECT * FROM master000 LIMIT 50000"
+    # query = "SELECT * FROM new_places"
     lats = []
     lons = []
     labels = []
     for line in c.execute(query):
         lats.append(line[1])
         lons.append(line[2])
-        labels.append(str(line[0]) + " " + str(line[3]) + " " + str(line[4]))
+        # labels.append(str(line[0]) + " " + str(line[3]) + " " + str(line[4]))
         # lon = -135.3318
         # lat = 57.0799
 

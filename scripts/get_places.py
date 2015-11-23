@@ -98,7 +98,7 @@ def places_using_time():
             line[4] = line[4][:-1]
             # print(line)
             if added_to_initial:
-                if get_minutes(line[4], initial[len(initial) - 1][4]) > 10:
+                if get_minutes(line[4], last[4]) > 10:
                     # print("adding to final: ", line)
                     final.append(line)
                     added_to_final = True
@@ -113,6 +113,9 @@ def places_using_time():
         if added_to_initial:
             final.append(last)
 
+    # print(len(initial))
+    # print(len(final))
+
     for i in range(0, len(initial) - 1):
         values = [initial[i][0], final[i][0]]
         query = "INSERT INTO finit VALUES({},{})".format(initial[i][0], final[i][0])
@@ -122,6 +125,54 @@ def places_using_time():
     conn.close()
     back_to_path(cur_path)
 
+def get_places_by_date_time():
+    cur_path = change_path_to_data()
+    conn = sqlite3.connect('data.db')
+    c = conn.cursor()
+
+    # Get all dates from the database
+    query = "SELECT DISTINCT dated FROM master000"
+    dates = []
+    for line in c.execute(query):
+        dates.append(line[0])
+
+    places = []
+
+    # For each date in the database, get all the locations and extract places based on 10 minute difference
+    for d in dates:
+        query = "SELECT * FROM master000 WHERE dated = '" + str(d) + "'"
+        # print(query)
+        prev = 0
+        for line in c.execute(query):
+            line = list(line)
+            line[4] = line[4][:-1]
+            if prev == 0:
+                # print(line, prev)
+                places.append(line)
+                prev += 1
+            else:
+                minutes = get_minutes(places[prev-1][4], line[4])
+                # print(minutes)
+                if minutes > 15:
+                    # print(line, minutes, prev)
+                    places.append(line)
+                    prev += 1
+
+    # Remove entries from new_places table
+    query = "DELETE FROM new_places"
+    c.execute(query)
+    query = "DELETE FROM sqlite_sequence WHERE NAME = 'new_places'"
+    c.execute(query)
+
+    for place in places:
+        c.execute("INSERT INTO new_places(latitude, longitude, dated, timed) VALUES (?, ?, ?, ?)", place[1:])
+        print(place[0:4])
+
+    conn.commit()
+    conn.close()
+    back_to_path(cur_path)
+
 if __name__ == '__main__':
     # get_places()
-    places_using_time()
+    # places_using_time()
+    get_places_by_date_time()

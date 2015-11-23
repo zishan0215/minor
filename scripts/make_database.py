@@ -34,7 +34,22 @@ def place():
     c = conn.cursor()
     query = '''CREATE TABLE IF NOT EXISTS places (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 latitude REAL NOT NULL, longitude REAL NOT NULL, dated DATE NOT NULL,
-                timed TIME NOT NULL, weight INTEGER NOT NULL DEFAULT 0)
+                timed TIME NOT NULL, weight INTEGER NOT NULL DEFAULT 0, name TEXT)
+            '''
+    c.execute(query)
+    conn.commit()
+    conn.close()
+    os.chdir(cur_path)
+
+def new_places():
+    cur_path = os.getcwd()
+    path = cur_path[:-7] + "data/"
+    os.chdir(path)
+    conn = sqlite3.connect('data.db')
+    c = conn.cursor()
+    query = '''CREATE TABLE IF NOT EXISTS new_places (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                latitude REAL NOT NULL, longitude REAL NOT NULL, dated DATE NOT NULL,
+                timed TIME NOT NULL, weight INTEGER NOT NULL DEFAULT 0, name TEXT)
             '''
     c.execute(query)
     conn.commit()
@@ -67,4 +82,5 @@ if __name__ == '__main__':
     # master()
     # place()
     # alter_places()
-    create_finit()
+    # create_finit()
+    new_places()
